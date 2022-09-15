@@ -9,7 +9,7 @@
      (cond
        (empty? alphabet) result
        (empty? words) (task1-1-helper rest_letters words_copy words_copy result)
-       (= (first first_word) first_letter) (task1-1-helper alphabet rest_words words_copy result)
+       (= (str (first first_word)) first_letter) (task1-1-helper alphabet rest_words words_copy result)
        true (task1-1-helper alphabet rest_words words_copy (cons (str first_letter first_word) result))
        )
      )
