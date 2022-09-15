@@ -1,29 +1,35 @@
 (ns clojure22-1.1)
 
-(defn add-chars
-  "Возвращает все варианты продолжения строки"
-  [s, res, chs]
-  (if
-    (> (count chs) 0)
-    (if
-      (= (first s) (first chs))
-      (add-chars s res (rest chs))
-      (add-chars s
-                 (conj res (conj s (first chs)))
-                 (rest chs)))
-    res))
+(defn task1-1-helper
+  ([alphabet words words_copy result]
+   (let [first_letter (first alphabet)
+         rest_letters (rest alphabet)
+         first_word (first words)
+         rest_words (rest words)]
+     (cond
+       (empty? alphabet) result
+       (empty? words) (task1-1-helper rest_letters words_copy words_copy result)
+       (= (first first_word) first_letter) (task1-1-helper alphabet rest_words words_copy result)
+       true (task1-1-helper alphabet rest_words words_copy (cons (str first_letter first_word) result))
+       )
+     )
+   )
+  ([alphabet words] (task1-1-helper alphabet words words ()))
+  )
 
-(defn foo
-  [args, res, alphabet]
-  (if
-    (> (count args) 0)
-    (foo
-      (rest args)
-      (conj res (add-chars (list (first args)) (list) alphabet))
-      alphabet)
-    res))
+(defn task1-1
+  ([alphabet n] (task1-1 (reverse alphabet) n (reverse alphabet)))
+  ([alphabet n result]
+   (cond
+     (= n 1) result
+     true (task1-1 alphabet (- n 1) (task1-1-helper alphabet result))
+     )
+   )
+  )
+
 (defn task1
   "Задан набор символов и число n. Опишите функцию, которая возвращает список всех строк длины n,\n
   состоящих из этих символов и не содержащих двух одинаковых символов, идущих подряд."
-  [& args]
-  (println (foo args (list) args)))
+  [args, n]
+  (println (task1-1 args n))
+  )
