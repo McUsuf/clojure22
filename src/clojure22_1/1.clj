@@ -1,29 +1,28 @@
 (ns clojure22-1.1)
 
-(defn add-chars
-  "Возвращает все варианты продолжения строки"
-  [s, res, chs]
-  (if
-    (> (count chs) 0)
-    (if
-      (= (first s) (first chs))
-      (add-chars s res (rest chs))
-      (add-chars s
-                 (conj res (conj s (first chs)))
-                 (rest chs)))
-    res))
+(defn add-to-word [word alphabet]
+  (when (not-empty alphabet)
+    (let [result (add-to-word word (rest alphabet))]
+      (if (not= (first alphabet) (first word))
+        (conj result (conj word (first alphabet)))
+        result)
+      )
+    )
+  )
 
-(defn foo
-  [args, res, alphabet]
-  (if
-    (> (count args) 0)
-    (foo
-      (rest args)
-      (conj res (add-chars (list (first args)) (list) alphabet))
-      alphabet)
-    res))
-(defn task1
-  "Задан набор символов и число n. Опишите функцию, которая возвращает список всех строк длины n,\n
-  состоящих из этих символов и не содержащих двух одинаковых символов, идущих подряд."
-  [& args]
-  (println (foo args (list) args)))
+(defn update-words [words alphabet]
+  (when (not-empty words)
+    (concat (update-words (rest words) alphabet)
+            (add-to-word (first words) alphabet))
+    )
+  )
+
+(defn permutations [alphabet n]
+  (if (> n 0)
+    (update-words (permutations alphabet (- n 1)) alphabet)
+    '(())
+    )
+  )
+
+(defn -main []
+  (permutations 3 '("a" [1 2 3] ["e" "g"])))
