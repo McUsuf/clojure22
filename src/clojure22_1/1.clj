@@ -25,4 +25,4 @@
   )
 
 (defn -main []
-  (permutations 3 '("a" [1 2 3] ["e" "g"])))
+  (permutations '("a" [1 2 3] ["e" "g"]) 3))
