@@ -11,17 +11,17 @@
         (recur (rest alphabet) current-res))
       result)))
 
-(defn update-words [[words alphabet]]
+(defn update-words [words alphabet]
   (loop [words words result ()]
     (if (not-empty words)
       (recur (rest words)
         (concat result (add-to-word (first words) alphabet)))
-      [result, alphabet])
+      result)
     )
   )
 
 (defn perms_iter [n alphabet]
-  (first (nth (iterate update-words [`(()) alphabet]) n)))
+  (nth (iterate #(update-words %1 alphabet)  `(())) n))
 
 (defn -main []
   (perms_iter 3 '("a" [1 2 3] ["e" "g"])))
