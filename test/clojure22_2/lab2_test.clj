@@ -1,4 +1,4 @@
-(ns clojure22-1.lab2_test
+(ns clojure22-2.lab2_test
   (:require [clojure.test :refer :all]
             [clojure22_2.lab2 :refer [integral-memo
                                       integral-seq area-seq area-lazy-seq
