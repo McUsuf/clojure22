@@ -24,4 +24,11 @@
                                        {(variable :a) true
                                         (variable :b) false
                                         (variable :c) true})))
+
+  (println (expr-str (to-dnf expression)))
+
+  (println (expr-str (to-dnf expression
+                             {(variable :a) true
+                              (variable :b) false
+                              (variable :c) true})))
   )

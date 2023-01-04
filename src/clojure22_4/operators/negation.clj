@@ -1,5 +1,9 @@
 (ns clojure22-4.operators.negation
-  (:require [clojure22-4.utility :refer :all]))
+  (:require
+    [clojure22-4.utility :refer :all]
+    [clojure22-4.basic-terms :refer :all]
+    )
+  )
 
 (defn negation
   "return negation of expression"
@@ -16,3 +20,8 @@
   [expr]
   {:pre [(negation? expr)]}
   (first (expr-args expr)))
+
+(defn primitive-or-negation?
+  "return true if expression expr is variable or constant or negation"
+  [expr]
+  (or (primitive? expr) (negation? expr)))

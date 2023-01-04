@@ -41,3 +41,8 @@
   [c]
   {:pre [(const? c)]}
   (second c))
+
+(defn primitive?
+  "return true if expressions expr is variable or constant."
+  [expr]
+  (or (variable? expr) (const? expr)))

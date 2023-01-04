@@ -5,7 +5,7 @@
   )
 
 (deftest basic-terms-tests
-  (testing
+  (testing "primitive terms test"
     (is (variable? (variable :vv)))
     (is (variables-equals? (variable :a) (variable :a)))
     (is (not (variables-equals? (variable :a) (variable :b))))
