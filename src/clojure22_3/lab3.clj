@@ -4,7 +4,7 @@
 
 (defn split-seq [coll chunk-sizes]
   (let [chunk-size (first chunk-sizes)
-        split-coll (split-at chunk-size coll)]
+        split-coll [(take chunk-size coll) (drop chunk-size coll)]]
     (lazy-seq (cons (first split-coll)
                     (split-seq (second split-coll)
                                (rest chunk-sizes))))))
@@ -20,7 +20,7 @@
          (split-seq coll)
          (take chunks-num))))
 
-(println (my-partition threads-num `(1 2 3 4 5 6 7 8 9 0)))
+;(println (my-partition threads-num `(1 2 3 4 5 6 7 8 9 0)))
 
 (defn pfilter [pred coll]
   (->> (my-partition threads-num coll)
@@ -28,4 +28,21 @@
        (doall)
        (mapcat deref)))
 
+(defn dummy-predicate [x]
+  (Thread/sleep 100)
+  (even? x))
 
+(defn test-filter-fn [filter-fn]
+  (time (->> (range)
+             (take 30)
+             (filter-fn dummy-predicate)
+             (doall))))
+
+(defn -main []
+  (let [filters {:pfilter  pfilter
+                 :vanilla  filter}]
+    (doall (map (fn [[name cur-filter]]
+                    (print (str "Filter " name ": "))
+                    (test-filter-fn cur-filter)
+                    (println ""))
+                  filters))))

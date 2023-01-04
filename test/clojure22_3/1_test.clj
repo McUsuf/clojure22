@@ -28,5 +28,3 @@
 
 (deftest pfilter-test
   (test-filter pfilter))
-
-
