@@ -28,21 +28,44 @@
        (doall)
        (mapcat deref)))
 
+(defn lsplit-seq [coll chunk-size]
+  (let [[chunk rest-coll] [(take chunk-size coll) (drop chunk-size coll)]]
+    (when (not (empty? coll))
+      (lazy-seq (cons chunk
+                      (lsplit-seq rest-coll chunk-size))))))
+
+(defn lazy-pfilter [pred coll]
+   (->> (lsplit-seq coll
+                    (* 64 threads-num))
+        (mapcat (partial pfilter pred))))
+
 (defn dummy-predicate [x]
-  (Thread/sleep 100)
+  (Thread/sleep 10)
   (even? x))
 
-(defn test-filter-fn [filter-fn]
+(defn test-filter-finite [filter-fn]
   (time (->> (range)
              (take 30)
              (filter-fn dummy-predicate)
              (doall))))
 
+
+(defn test-filter-infinite [filter-fn]
+  (time (->> (range)
+             (filter-fn dummy-predicate)
+             (take 250)
+             (doall))))
+
 (defn -main []
-  (let [filters {:pfilter  pfilter
-                 :vanilla  filter}]
+  (let [filters {:vanilla       filter
+                 :lazy-parallel lazy-pfilter
+                 :parallel      pfilter}]
     (doall (map (fn [[name cur-filter]]
-                    (print (str "Filter " name ": "))
-                    (test-filter-fn cur-filter)
+                    (print (str "Filter finite " name ": "))
+                    (test-filter-finite cur-filter)
+                    (if-not (= name :parallel)
+                      (do
+                        (print (str "Filter infinite " name ": "))
+                        (test-filter-infinite cur-filter)))
                     (println ""))
                   filters))))
